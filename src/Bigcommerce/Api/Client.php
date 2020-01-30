@@ -10,6 +10,8 @@ use Firebase\JWT\JWT;
  */
 class Client
 {
+    const VERSION2 = 'v2';
+    const VERSION3 = 'v3';
     /**
      * Full Store URL to connect to
      *
@@ -58,11 +60,13 @@ class Client
      * @var string
      */
     public static $api_path;
+    public static $api_path_v3;
     private static $client_id;
     private static $store_hash;
     private static $auth_token;
     private static $client_secret;
     private static $stores_prefix = '/stores/%s/v2';
+    private static $stores_prefix_v3 = '/stores/%s/v3';
     private static $api_url = 'https://api.bigcommerce.com';
     private static $login_url = 'https://login.bigcommerce.com';
 
@@ -112,6 +116,7 @@ class Client
         self::$client_secret = isset($settings['client_secret']) ? $settings['client_secret'] : null;
 
         self::$api_path = self::$api_url . sprintf(self::$stores_prefix, self::$store_hash);
+        self::$api_path_v3 = self::$api_url . sprintf(self::$stores_prefix_v3, self::$store_hash);
         self::$connection = false;
     }
 
@@ -254,13 +259,18 @@ class Client
      *
      * @param string $path api endpoint
      * @param string $resource resource class to map individual items
+     * @param string $version api version to use, defaults to v2
      * @return mixed array|string mapped collection or XML string if useXml is true
      */
-    public static function getCollection($path, $resource = 'Resource')
+    public static function getCollection($path, $resource = 'Resource',$version = self::VERSION2))
     {
-        $response = self::connection()->get(self::$api_path . $path);
-
-        return self::mapCollection($resource, $response);
+        if ($version == self::VERSION2){
+            $response = self::connection()->get(self::$api_path . $path );
+            return self::mapCollection($resource, $response);
+        } else {
+            $response = self::connection()->get(self::$api_path_v3 . $path );
+            return self::mapCollection($resource, $response->data);
+        }
     }
 
     /**
@@ -268,24 +278,39 @@ class Client
      *
      * @param string $path api endpoint
      * @param string $resource resource class to map individual items
+     * @param string $version api version to use, defaults to v2
      * @return mixed Resource|string resource object or XML string if useXml is true
      */
-    public static function getResource($path, $resource = 'Resource')
+    public static function getResource($path, $resource = 'Resource',$version = self::VERSION2)
     {
-        $response = self::connection()->get(self::$api_path . $path);
-
-        return self::mapResource($resource, $response);
+        if ($version == self::VERSION2){
+            $response = self::connection()->get(self::$api_path . $path );
+            return self::mapResource($resource, $response);
+        } else {
+            $response = self::connection()->get(self::$api_path_v3 . $path );
+            return self::mapResource($resource, $response->data);
+        }
+//        $response = self::connection()->get(self::$api_path . $path);
+//        return self::mapResource($resource, $response);
     }
 
     /**
      * Get a count value from the specified endpoint.
      *
      * @param string $path api endpoint
+     * @param string $version api version to use, defaults to v2
      * @return mixed int|string count value or XML string if useXml is true
      */
-    public static function getCount($path)
+    public static function getCount($path,$version = self::VERSION2))
     {
-        $response = self::connection()->get(self::$api_path . $path);
+        
+        if ($version == self::VERSION2){
+            $url = self::$api_path . $path;
+        } else {
+            $url = self::$api_path_v3 . $path;
+        }
+
+        $response = self::connection()->get($url);
 
         if ($response == false || is_string($response)) {
             return $response;
@@ -299,15 +324,22 @@ class Client
      *
      * @param string $path api endpoint
      * @param mixed $object object or XML string to create
+     * @param string $version api version to use, defaults to v2
      * @return mixed
      */
-    public static function createResource($path, $object)
+    public static function createResource($path, $object,$version = self::VERSION2)
     {
         if (is_array($object)) {
             $object = (object)$object;
         }
 
-        return self::connection()->post(self::$api_path . $path, $object);
+        if ($version == self::VERSION2){
+            $url = self::$api_path . $path;
+        } else {
+            $url = self::$api_path_v3 . $path;
+        }
+
+        return self::connection()->post($url, $object);;
     }
 
     /**
@@ -315,26 +347,39 @@ class Client
      *
      * @param string $path api endpoint
      * @param mixed $object object or XML string to update
+     * @param string $version api version to use, defaults to v2
      * @return mixed
      */
-    public static function updateResource($path, $object)
+    public static function updateResource($path, $object,$version = self::VERSION2)
     {
         if (is_array($object)) {
             $object = (object)$object;
         }
 
-        return self::connection()->put(self::$api_path . $path, $object);
+	if ($version == self::VERSION2){
+            $url = self::$api_path . $path;
+        } else {
+            $url = self::$api_path_v3 . $path;
+        }
+
+        return self::connection()->put($url, $object);
     }
 
     /**
      * Send a delete request to remove the specified resource.
      *
      * @param string $path api endpoint
+     * @param string $version api version to use, defaults to v2
      * @return mixed
      */
-    public static function deleteResource($path)
+    public static function deleteResource($path,$version = self::VERSION2))
     {
-        return self::connection()->delete(self::$api_path . $path);
+        if ($version == self::VERSION2){
+            $url = self::$api_path . $path;
+        } else {
+            $url = self::$api_path_v3 . $path;
+        }
+        return self::connection()->delete($url);
     }
 
     /**
@@ -723,7 +768,7 @@ class Client
     public static function getCategories($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCollection('/categories' . $filter->toQuery(), 'Category');
+        return self::getCollection('/catalog/categories' . $filter->toQuery(), 'Category',self::VERSION3);
     }
 
     /**
@@ -735,7 +780,7 @@ class Client
     public static function getCategoriesCount($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCount('/categories/count' . $filter->toQuery());
+        return self::getCount('/catalog/categories/count' . $filter->toQuery(),self::VERSION3);
     }
 
     /**
@@ -746,7 +791,7 @@ class Client
      */
     public static function getCategory($id)
     {
-        return self::getResource('/categories/' . $id, 'Category');
+        return self::getResource('/catalog/categories/' . $id, 'Category',self::VERSION3);
     }
 
     /**
@@ -757,7 +802,7 @@ class Client
      */
     public static function createCategory($object)
     {
-        return self::createResource('/categories', $object);
+        return self::createResource('/catalog/categories', $object,self::VERSION3);
     }
 
     /**
@@ -769,7 +814,7 @@ class Client
      */
     public static function updateCategory($id, $object)
     {
-        return self::updateResource('/categories/' . $id, $object);
+        return self::updateResource('/catalog/categories/' . $id, $object,self::VERSION3);
     }
 
     /**
@@ -780,7 +825,7 @@ class Client
      */
     public static function deleteCategory($id)
     {
-        return self::deleteResource('/categories/' . $id);
+        return self::deleteResource('/catalog/categories/' . $id,self::VERSION3);
     }
 
     /**
@@ -790,7 +835,7 @@ class Client
      */
     public static function deleteAllCategories()
     {
-        return self::deleteResource('/categories');
+        return self::deleteResource('/catalog/categories',self::VERSION3);
     }
 
     /**
@@ -802,7 +847,7 @@ class Client
     public static function getBrands($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCollection('/brands' . $filter->toQuery(), 'Brand');
+        return self::getCollection('/catalog/brands' . $filter->toQuery(), 'Brand',self::VERSION3);
     }
 
     /**
@@ -814,7 +859,7 @@ class Client
     public static function getBrandsCount($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCount('/brands/count' . $filter->toQuery());
+        return self::getCount('/catalog/brands/count' . $filter->toQuery(),self::VERSION3);
     }
 
     /**
@@ -825,7 +870,7 @@ class Client
      */
     public static function getBrand($id)
     {
-        return self::getResource('/brands/' . $id, 'Brand');
+        return self::getResource('/catalog/brands/' . $id, 'Brand',self::VERSION3);
     }
 
     /**
@@ -836,7 +881,7 @@ class Client
      */
     public static function createBrand($object)
     {
-        return self::createResource('/brands', $object);
+        return self::createResource('/catalog/brands', $object,self::VERSION3);
     }
 
     /**
@@ -848,7 +893,7 @@ class Client
      */
     public static function updateBrand($id, $object)
     {
-        return self::updateResource('/brands/' . $id, $object);
+        return self::updateResource('/catalog/brands/' . $id, $object,self::VERSION3);
     }
 
     /**
@@ -859,7 +904,7 @@ class Client
      */
     public static function deleteBrand($id)
     {
-        return self::deleteResource('/brands/' . $id);
+        return self::deleteResource('/catalog/brands/' . $id,self::VERSION3);
     }
 
     /**
@@ -869,7 +914,7 @@ class Client
      */
     public static function deleteAllBrands()
     {
-        return self::deleteResource('/brands');
+        return self::deleteResource('/catalog/brands',self::VERSION3);
     }
 
     /**
