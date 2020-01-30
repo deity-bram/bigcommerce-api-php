@@ -262,7 +262,7 @@ class Client
      * @param string $version api version to use, defaults to v2
      * @return mixed array|string mapped collection or XML string if useXml is true
      */
-    public static function getCollection($path, $resource = 'Resource',$version = self::VERSION2))
+    public static function getCollection($path, $resource = 'Resource',$version = self::VERSION2)
     {
         if ($version == self::VERSION2){
             $response = self::connection()->get(self::$api_path . $path );
@@ -301,7 +301,7 @@ class Client
      * @param string $version api version to use, defaults to v2
      * @return mixed int|string count value or XML string if useXml is true
      */
-    public static function getCount($path,$version = self::VERSION2))
+    public static function getCount($path,$version = self::VERSION2)
     {
         
         if ($version == self::VERSION2){
@@ -372,7 +372,7 @@ class Client
      * @param string $version api version to use, defaults to v2
      * @return mixed
      */
-    public static function deleteResource($path,$version = self::VERSION2))
+    public static function deleteResource($path,$version = self::VERSION2)
     {
         if ($version == self::VERSION2){
             $url = self::$api_path . $path;
