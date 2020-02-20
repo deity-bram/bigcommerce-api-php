@@ -518,7 +518,7 @@ class Client
     public static function getProducts($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCollection('/products' . $filter->toQuery(), 'Product');
+        return self::getCollection('/catalog/products' . $filter->toQuery(), 'Product',self::VERSION3);
     }
 
     /**
@@ -529,7 +529,7 @@ class Client
      */
     public static function getProductImages($id)
     {
-        return self::getCollection('/products/' . $id . '/images/', 'ProductImage');
+        return self::getCollection('/catalog/products/' . $id . '/images/', 'ProductImage',self::VERSION3);
     }
 
     /**
@@ -839,6 +839,65 @@ class Client
     }
 
     /**
+     * Returns a list of Metafields on a Category.
+     *
+     * @param $id category Id
+     */
+    public static function getCategoryMetaFields($id){
+        return self::getResource('/catalog/categories/' . $id.'/metafields', 'Resource',self::VERSION3);
+    }
+
+    /**
+     * Create a new category MetaField from the given data.
+     *
+     * @param int $id category id
+     * @param mixed $object
+     * @return mixed
+     */
+    public static function createCategoryMetaField($object)
+    {
+        return self::createResource('/catalog/categories/'.$id.'/metafields', $object,self::VERSION3);
+    }
+
+
+    /**
+     * A single category metafield by given id.
+     *
+     * @param int $id category id
+     * @return Resources\Category
+     */
+    public static function getCategoryMetaField($categoryId,$id)
+    {
+        return self::getResource('/catalog/categories/' . $categoryId.'/metafields/'.$id, 'Resource',self::VERSION3);
+    }
+
+    /**
+     * Update the given category metafield.
+     *
+     * @param int $categoryId category id
+     * @param int $id metafield id
+     * @param mixed $object
+     * @return mixed
+     */
+    public static function updateCategoryMetaField($categoryId,$id, $object)
+    {
+        return self::updateResource('/catalog/categories/' .$categoryId.'/metafields/'. $id, $object,self::VERSION3);
+    }
+
+    /**
+     * Delete the given category.
+     *
+     * @param int $categoryId category id
+     * @param int $id metafield id
+     * @return mixed
+     */
+    public static function deleteCategoryMetaField($categoryId,$id)
+    {
+        return self::deleteResource('/catalog/categories/'.$categoryId.'/metafields/'. $id,self::VERSION3);
+    }
+
+
+    /**
      * The collection of brands.
      *
      * @param array $filter
@@ -915,6 +974,65 @@ class Client
     public static function deleteAllBrands()
     {
         return self::deleteResource('/catalog/brands',self::VERSION3);
+    }
+
+    /**
+     * Returns a list of Metafields on a Category.
+     *
+     * @param $id brand Id
+     */
+    public static function getBrandMetaFields($id){
+        return self::getResource('/catalog/brands/' . $id.'/metafields', 'Resource',self::VERSION3);
+    }
+
+    /**
+     * Create a new brand MetaField from the given data.
+     *
+     * @param int $id brand id
+     * @param mixed $object
+     * @return mixed
+     */
+    public static function createBrandMetaField($id,$object)
+    {
+        return self::createResource('/catalog/brands/'.$id.'/metafields', $object,self::VERSION3);
+    }
+
+
+    /**
+     * A single category metafield by given id.
+     *
+     * @param int $brandId brand id
+     * @param int $id metafield id
+     * @return Resources\MetaField
+     */
+    public static function getBrandMetaField($brandId,$id)
+    {
+        return self::getResource('/catalog/brands/' . $brandId.'/metafields/'.$id, 'Resource',self::VERSION3);
+    }
+
+    /**
+     * Update the given category metafield.
+     *
+     * @param int $brandId brand id
+     * @param int $id metafield id
+     * @param mixed $object
+     * @return mixed
+     */
+    public static function updateBrandMetaField($brandId,$id, $object)
+    {
+        return self::updateResource('/catalog/brands/' .$brandId.'/metafields/'. $id, $object,self::VERSION3);
+    }
+
+    /**
+     * Delete the given category.
+     *
+     * @param int $brandId brand id
+     * @param int $id metafield id
+     * @return mixed
+     */
+    public static function deleteBrandMetaField($brandId,$id)
+    {
+        return self::deleteResource('/catalog/brands/'.$brandId.'/metafields/'. $id,self::VERSION3);
     }
 
     /**

@@ -51,7 +51,7 @@ class Product extends Resource
 
     public function images()
     {
-        return Client::getCollection($this->fields->images->resource, 'ProductImage');
+        return Client::getCollection('/catalog/products/' . $this->id . '/images', 'ProductImage',Client::VERSION3);
     }
 
     public function skus()
@@ -66,7 +66,7 @@ class Product extends Resource
 
     public function videos()
     {
-        return Client::getCollection($this->fields->videos->resource, 'ProductVideo');
+        return Client::getCollection('/catalog/products/' . $this->id . '/videos', 'ProductVideo',Client::VERSION3);
     }
 
     public function custom_fields()
@@ -91,7 +91,7 @@ class Product extends Resource
 
     public function options()
     {
-        return Client::getCollection('/products/' . $this->id . '/options', 'ProductOption');
+        return Client::getCollection('/catalog/products/' . $this->id . '/options', 'ProductOption',Client::VERSION3);
     }
 
     public function create()
@@ -112,5 +112,10 @@ class Product extends Resource
     public function tax_class()
     {
         return Client::getResource($this->fields->tax_class->resource, 'TaxClass');
+    }
+
+    public function variants()
+    {
+        return Client::getCollection('/catalog/products/' . $this->id . '/variants', 'Resource',Client::VERSION3);
     }
 }
