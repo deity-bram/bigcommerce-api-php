@@ -31,4 +31,9 @@ class Category extends Resource
     {
         return Client::deleteCategory($this->id);
     }
+
+    public function metaFields()
+    {
+        return Client::getCollection('/catalog/category/' . $this->id . '/metafields', 'Resource',Client::VERSION3);
+    }
 }

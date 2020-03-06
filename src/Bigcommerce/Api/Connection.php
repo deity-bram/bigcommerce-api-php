@@ -283,7 +283,6 @@ class Connection
         $body = ($this->rawResponse) ? $this->getBody() : json_decode($this->getBody());
 
         $status = $this->getStatus();
-
         if ($status >= 400 && $status <= 499) {
             if ($this->failOnError) {
                 throw new ClientError($body, $status);
