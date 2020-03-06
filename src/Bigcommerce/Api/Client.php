@@ -540,7 +540,7 @@ class Client
      */
     public static function getProductCustomFields($id)
     {
-        return self::getCollection('/products/' . $id . '/custom_fields', 'ProductCustomField');
+        return self::getCollection('/catalog/products/' . $id . '/custom_fields', 'ProductCustomField',self::VERSION3);
     }
 
     /**
@@ -551,7 +551,7 @@ class Client
      */
     public static function getProductCustomField($product_id, $id)
     {
-        return self::getResource('/products/' . $product_id . '/custom_fields/' . $id, 'ProductCustomField');
+        return self::getResource('/catalog/products/' . $product_id . '/custom_fields/' . $id, 'ProductCustomField',self::VERSION3);
     }
 
     /**
@@ -563,7 +563,7 @@ class Client
      */
     public static function createProductCustomField($product_id, $object)
     {
-        return self::createResource('/products/' . $product_id . '/custom_fields', $object);
+        return self::createResource('/catalog/products/' . $product_id . '/custom_fields', $object,self::VERSION3);
     }
 
     /**
@@ -574,7 +574,7 @@ class Client
      */
     public static function getProductReviews($id)
     {
-        return self::getCollection('/products/' . $id . '/reviews/', 'ProductReview');
+        return self::getCollection('/catalog/products/' . $id . '/reviews/', 'ProductReview',self::VERSION3);
     }
 
     /**
@@ -587,7 +587,7 @@ class Client
      */
     public static function updateProductCustomField($product_id, $id, $object)
     {
-        return self::updateResource('/products/' . $product_id . '/custom_fields/' . $id, $object);
+        return self::updateResource('/catalog/products/' . $product_id . '/custom_fields/' . $id, $object,self::VERSION3);
     }
 
     /**
@@ -599,7 +599,7 @@ class Client
      */
     public static function deleteProductCustomField($product_id, $id)
     {
-        return self::deleteResource('/products/' . $product_id . '/custom_fields/' . $id);
+        return self::deleteResource('/catalog/products/' . $product_id . '/custom_fields/' . $id,self::VERSION3);
     }
 
     /**
@@ -611,7 +611,7 @@ class Client
     public static function getProductsCount($filter = array())
     {
         $filter = Filter::create($filter);
-        return self::getCount('/products/count' . $filter->toQuery());
+        return self::getCount('/catalog/products/count' . $filter->toQuery(),self::VERSION3);
     }
 
     /**
@@ -622,7 +622,7 @@ class Client
      */
     public static function getProduct($id)
     {
-        return self::getResource('/products/' . $id, 'Product');
+        return self::getResource('/catalog/products/' . $id, 'Product');
     }
 
     /**
@@ -633,7 +633,7 @@ class Client
      */
     public static function createProduct($object)
     {
-        return self::createResource('/products', $object);
+        return self::createResource('/catalog/products', $object,self::VERSION3);
     }
 
     /**
@@ -645,7 +645,7 @@ class Client
      */
     public static function updateProduct($id, $object)
     {
-        return self::updateResource('/products/' . $id, $object);
+        return self::updateResource('/catalog/products/' . $id, $object,self::VERSION3);
     }
 
     /**
@@ -656,7 +656,7 @@ class Client
      */
     public static function deleteProduct($id)
     {
-        return self::deleteResource('/products/' . $id);
+        return self::deleteResource('/catalog/products/' . $id,self::VERSION3);
     }
 
     /**
@@ -666,7 +666,7 @@ class Client
      */
     public static function deleteAllProducts()
     {
-        return self::deleteResource('/products');
+        return self::deleteResource('/catalog/products',self::VERSION3);
     }
 
     /**
@@ -854,8 +854,10 @@ class Client
      * @param mixed $object
      * @return mixed
      */
-    public static function createCategoryMetaField($object)
+    public static function createCategoryMetaField($id,$object)
     {
+        $object->resource_type = 'category';
+        $object->resource_id = $id;
         return self::createResource('/catalog/categories/'.$id.'/metafields', $object,self::VERSION3);
     }
 
@@ -982,6 +984,8 @@ class Client
      * @param $id brand Id
      */
     public static function getBrandMetaFields($id){
+        $object->resource_type = 'brand';
+        $object->resource_id = $id;
         return self::getResource('/catalog/brands/' . $id.'/metafields', 'Resource',self::VERSION3);
     }
 
@@ -994,6 +998,7 @@ class Client
      */
     public static function createBrandMetaField($id,$object)
     {
+
         return self::createResource('/catalog/brands/'.$id.'/metafields', $object,self::VERSION3);
     }
 
