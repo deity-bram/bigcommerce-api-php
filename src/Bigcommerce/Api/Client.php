@@ -670,6 +670,68 @@ class Client
     }
 
     /**
+     * Returns a single product resource by the given id.
+     *
+     * @param int $id product id
+     * @return Resources\Product|string
+     */
+    public static function getVariant($productId,$id)
+    {
+        return self::getResource('/catalog/products/' . $productId.'/variants/'.$id, 'Resource',self::VERSION3);
+    }
+
+    public static function getVariants($productId,$filter=array())
+    {
+        $filter = Filter::create($filter);
+        return self::getCollection('/catalog/products/' . $productId.'/variants' . $filter->toQuery(), 'Resource',self::VERSION3);
+    }
+
+    /**
+     * Create a new product variant.
+     *
+     * @param mixed $object fields to create
+     * @return mixed
+     */
+    public static function createVariant($productId,$object)
+    {
+        return self::createResource('/catalog/products/'. $productId.'/variants', $object,self::VERSION3);
+    }
+
+    /**
+     * Update the given product variant.
+     *
+     * @param int $id product id
+     * @param mixed $object fields to update
+     * @return mixed
+     */
+    public static function updateVariant($productId,$id, $object)
+    {
+        return self::updateResource('/catalog/products/'. $productId.'/variants/' . $id, $object,self::VERSION3);
+    }
+
+    /**
+     * Delete the given product variant.
+     *
+     * @param int $id product id
+     * @return mixed
+     */
+    public static function deleteVariant($productId,$id)
+    {
+        return self::deleteResource('/catalog/products/'. $productId.'/variants/' . $id,self::VERSION3);
+    }
+
+    /**
+     * Delete all products variants.
+     *
+     * @return mixed
+     */
+    public static function deleteAllVariants($productId)
+    {
+        return self::deleteResource('/catalog/products/'. $productId.'/variants/',self::VERSION3);
+    }
+
+
+    /**
      * Return the collection of options.
      *
      * @param array $filter
@@ -2020,7 +2082,7 @@ class Client
      */
     public static function getProductOptions($productId)
     {
-        return self::getCollection('/products/' . $productId . '/options');
+        return self::getCollection('/catalog/products/' . $productId . '/options','Resource',self::VERSION3);
     }
 
     /**
@@ -2032,7 +2094,104 @@ class Client
      */
     public static function getProductOption($productId, $productOptionId)
     {
-        return self::getResource('/products/' . $productId . '/options/' . $productOptionId);
+        return self::getResource('/catalog/products/' . $productId . '/options/' . $productOptionId,'Resource',self::VERSION3);
+    }
+
+    /**
+     * Create a new product.
+     *
+     * @param mixed $object fields to create
+     * @return mixed
+     */
+    public static function createProductOption($productId,$object)
+    {
+        return self::createResource('/catalog/products/'.$productId.'/options', $object,self::VERSION3);
+    }
+
+    /**
+     * Update the given product.
+     *
+     * @param int $productId product id
+     * @param int $id option id
+     * @param mixed $object fields to update
+     * @return mixed
+     */
+    public static function updateProductOption($productId,$id, $object)
+    {
+        return self::updateResource('/catalog/products/' .$productId.'/options/'. $id, $object,self::VERSION3);
+    }
+
+    /**
+     * Delete the given product.
+     *
+     * @param int $id product id
+     * @param int $id id
+     * @return mixed
+     */
+    public static function deleteProductOption($productId,$id)
+    {
+        return self::deleteResource('/catalog/products/' .$productId.'/options/'. $id,self::VERSION3);
+    }
+
+    /**
+     * Return the collection of all option values for a given option.
+     *
+     * @param int $productId
+     * @param int $productOptionId
+     * @return mixed
+     */
+    public static function getProductOptionValues($productId,$productOptionId)
+    {
+        return self::getCollection('/catalog/products/' . $productId . '/options/'.$productOptionId.'/values','Resource',self::VERSION3);
+    }
+
+    /**
+     * Return the collection of all option values for a given option.
+     *
+     * @param int $productId
+     * @param int $productOptionId
+     * @return mixed
+     */
+    public static function getProductOptionValue($productId, $productOptionId,$valueId)
+    {
+        return self::getResource('/catalog/products/' . $productId . '/options/' . $productOptionId.'/values/'.$valueId,'Resource',self::VERSION3);
+    }
+
+    /**
+     * Create a new ProductOptionValue.
+     *
+     * @param mixed $object fields to create
+     * @return mixed
+     */
+    public static function createProductOptionValue($object,$productId,$productOptionId)
+    {
+        return self::createResource('/catalog/products/'.$productId.'/options/' . $productOptionId.'/values/', $object,self::VERSION3);
+    }
+
+    /**
+     * Update the given ProductOptionValue.
+     *
+     * @param int $productId product id
+     * @param int $productId  $productOptionId
+     * @param int $id option id
+     * @param mixed $object fields to update
+     * @return mixed
+     */
+    public static function updateProductOptionValue($productId,$productOptionId,$id, $object)
+    {
+        return self::updateResource('/catalog/products/' .$productId.'/options/'. $productOptionId.'/values/'. $id, $object,self::VERSION3);
+    }
+
+    /**
+     * Delete the given ProductOptionValue.
+     *
+     * @param int $id product id
+     * @param int $id id
+     * @return mixed
+     */
+    public static function deleteProductOptionValue($productId,$productOptionId,$id)
+    {
+        return self::deleteResource('/catalog/products/' .$productId.'/options/'. $productOptionId.'/values/'. $id,self::VERSION3);
     }
 
     /**
