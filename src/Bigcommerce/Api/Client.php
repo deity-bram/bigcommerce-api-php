@@ -2140,9 +2140,24 @@ class Client
      * @param int $productOptionId
      * @return mixed
      */
-    public static function getProductOptionValues($productId,$productOptionId)
+    public static function getProductOptionValues($productId,$productOptionId,$filter = array())
     {
-        return self::getCollection('/catalog/products/' . $productId . '/options/'.$productOptionId.'/values','Resource',self::VERSION3);
+        $collection =self::getCollection('/catalog/products/' . $productId . '/options/'.$productOptionId.'/values','Resource',self::VERSION3);
+        /***.
+         * @todo filter the result because bc doesn't
+         */
+        $returnCollection = [];
+        foreach ($collection as $collectionItem){
+            foreach ($filter as $name=>$value) {
+                if ($collectionItem->$name !=$value ){
+                    break;
+                }
+                // only if all values matched
+                $returnCollection[] = $collectionItem;
+            }
+        }
+
+        return $returnCollection;
     }
 
     /**
@@ -2163,9 +2178,9 @@ class Client
      * @param mixed $object fields to create
      * @return mixed
      */
-    public static function createProductOptionValue($object,$productId,$productOptionId)
+    public static function createProductOptionValue($productId,$productOptionId,$object)
     {
-        return self::createResource('/catalog/products/'.$productId.'/options/' . $productOptionId.'/values/', $object,self::VERSION3);
+        return self::createResource('/catalog/products/'.$productId.'/options/' . $productOptionId.'/values', $object,self::VERSION3);
     }
 
     /**
