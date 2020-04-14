@@ -2080,9 +2080,32 @@ class Client
      * @param int $productId
      * @return mixed
      */
-    public static function getProductOptions($productId)
+    public static function getProductOptions($productId,$filter=[])
     {
-        return self::getCollection('/catalog/products/' . $productId . '/options','Resource',self::VERSION3);
+        $collection = self::getCollection('/catalog/products/' . $productId . '/options','Resource',self::VERSION3);
+        return self::filterCollection($filter,$collection);
+    }
+
+    /**
+     * Filter a retrieved collection because it wasn't handled server side
+     * @param array $filter
+     * @param array $collection
+     * @return array
+     */
+    protected static function filterCollection($filter,$collection){
+        $returnCollection = [];
+        if (empty($filter)) return $collection;
+
+        foreach ($collection as $collectionItem){
+            foreach ($filter as $name=>$value) {
+                if ($collectionItem->$name !=$value ){
+                    break;
+                }
+                // only if all values matched
+                $returnCollection[] = $collectionItem;
+            }
+        }
+        return $returnCollection;
     }
 
     /**
@@ -2144,20 +2167,9 @@ class Client
     {
         $collection =self::getCollection('/catalog/products/' . $productId . '/options/'.$productOptionId.'/values','Resource',self::VERSION3);
         /***.
-         * @todo filter the result because bc doesn't
+         * filter the result because bc doesn't
          */
-        $returnCollection = [];
-        foreach ($collection as $collectionItem){
-            foreach ($filter as $name=>$value) {
-                if ($collectionItem->$name !=$value ){
-                    break;
-                }
-                // only if all values matched
-                $returnCollection[] = $collectionItem;
-            }
-        }
-
-        return $returnCollection;
+        return self::filterCollection($filter,$collection);
     }
 
     /**
