@@ -1758,7 +1758,7 @@ class Client
      */
     public static function createProductImage($productId, $object)
     {
-        return self::createResource('/products/' . $productId . '/images', $object);
+        return self::createResource('/catalog/products/' . $productId . '/images', $object,self::VERSION3);
     }
 
     /**
@@ -1771,7 +1771,7 @@ class Client
      */
     public static function updateProductImage($productId, $imageId, $object)
     {
-        return self::updateResource('/products/' . $productId . '/images/' . $imageId, $object);
+        return self::updateResource('/catalog/products/' . $productId . '/images/' . $imageId, $object,self::VERSION3);
     }
 
     /**
@@ -1783,7 +1783,7 @@ class Client
      */
     public static function getProductImage($productId, $imageId)
     {
-        return self::getResource('/products/' . $productId . '/images/' . $imageId, 'ProductImage');
+        return self::getResource('/catalog/products/' . $productId . '/images/' . $imageId, 'ProductImage',self::VERSION3);
     }
 
     /**
@@ -1795,7 +1795,7 @@ class Client
      */
     public static function deleteProductImage($productId, $imageId)
     {
-        return self::deleteResource('/products/' . $productId . '/images/' . $imageId);
+        return self::deleteResource('/catalog/products/' . $productId . '/images/' . $imageId,self::VERSION3);
     }
 
     /**
