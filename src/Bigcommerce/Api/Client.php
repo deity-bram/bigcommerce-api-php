@@ -527,9 +527,10 @@ class Client
      * @param int $id product id
      * @return mixed array|string list of products or XML string if useXml is true
      */
-    public static function getProductImages($id)
+    public static function getProductImages($productId,$filter=array())
     {
-        return self::getCollection('/catalog/products/' . $id . '/images/', 'ProductImage',self::VERSION3);
+        $filter = Filter::create($filter);
+        return self::getCollection('/catalog/products/' . $productId.'/images' . $filter->toQuery(), 'Resource',self::VERSION3);
     }
 
     /**

@@ -71,7 +71,8 @@ class Product extends Resource
 
     public function custom_fields()
     {
-        return Client::getCollection($this->fields->custom_fields->resource, 'ProductCustomField');
+        return Client::getCollection('/catalog/products/' . $this->id . '/custom-fields', 'ProductCustomField',Client::VERSION3);
+//        return Client::getCollection($this->fields->custom_fields->resource, 'ProductCustomField');
     }
 
     public function configurable_fields()
