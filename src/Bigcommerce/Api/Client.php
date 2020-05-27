@@ -541,7 +541,7 @@ class Client
      */
     public static function getProductCustomFields($id)
     {
-        return self::getCollection('/catalog/products/' . $id . '/custom_fields', 'ProductCustomField',self::VERSION3);
+        return self::getCollection('/catalog/products/' . $id . '/custom-fields', 'ProductCustomField',self::VERSION3);
     }
 
     /**
@@ -552,7 +552,7 @@ class Client
      */
     public static function getProductCustomField($product_id, $id)
     {
-        return self::getResource('/catalog/products/' . $product_id . '/custom_fields/' . $id, 'ProductCustomField',self::VERSION3);
+        return self::getResource('/catalog/products/' . $product_id . '/custom-fields/' . $id, 'ProductCustomField',self::VERSION3);
     }
 
     /**
@@ -564,7 +564,7 @@ class Client
      */
     public static function createProductCustomField($product_id, $object)
     {
-        return self::createResource('/catalog/products/' . $product_id . '/custom_fields', $object,self::VERSION3);
+        return self::createResource('/catalog/products/' . $product_id . '/custom-fields', $object,self::VERSION3);
     }
 
     /**
@@ -588,7 +588,7 @@ class Client
      */
     public static function updateProductCustomField($product_id, $id, $object)
     {
-        return self::updateResource('/catalog/products/' . $product_id . '/custom_fields/' . $id, $object,self::VERSION3);
+        return self::updateResource('/catalog/products/' . $product_id . '/custom-fields/' . $id, $object,self::VERSION3);
     }
 
     /**
@@ -600,7 +600,7 @@ class Client
      */
     public static function deleteProductCustomField($product_id, $id)
     {
-        return self::deleteResource('/catalog/products/' . $product_id . '/custom_fields/' . $id,self::VERSION3);
+        return self::deleteResource('/catalog/products/' . $product_id . '/custom-fields/' . $id,self::VERSION3);
     }
 
     /**
